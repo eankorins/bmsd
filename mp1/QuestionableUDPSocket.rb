@@ -6,10 +6,15 @@ class QuestionableUDPSocket < UDPSocket
 	sent_packets = []
 
 	def reorder(mesg, flags, host, port)
-
+		#Splits message into 2 byte strings into an array
+		mesg_bits < mesg.scan(/.{2}/)
+		#Scrambles them and joins them together
+		scrambled = mesg_bits.shuffle.join('')
+		questionable_send(mesg, flags, host, port)
 	end
 
 	def duplicate(mesg, flags, host, port)
+		#Sends same message twice
 		2.times { questionable_send(mesg, flags, host, port) }
 	end
 

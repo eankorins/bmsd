@@ -47,10 +47,12 @@ t2 = Thread.new {
 		end
 	end
 
+	#Takes each packet message and adds it to a hashmap
 	received.each { |text, sockaddr| packet_count[text.to_i] += 1 }
-	puts packet_count
+	#Selects all that occur more than once and returns count
 	duplicates = packet_count.select { |k,v| v > 1 }.count
-	print "Sent: #{sent.total} Received: #{received.count}  (#{percentage_received.round(2)}\%) Duplicates: #{duplicates}\r"
+	duplicate_percentages = 100 -((duplicates.to_f / sent.total.to_f) * 100)
+	print "Sent: #{sent.total} Received: #{received.count}  (#{percentage_received.round(2)}\%) Duplicates: #{duplicates} (#{duplicate_percentages}%)\r"
 }
 t1.join
 t2.join

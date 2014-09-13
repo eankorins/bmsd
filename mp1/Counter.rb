@@ -1,3 +1,5 @@
+#Used as a thread safe counter.
+
 class Counter
   attr_reader :total
 

@@ -1,6 +1,6 @@
 require 'socket'
 
-
+#Used for receiving the packets
 listener = UDPSocket.new
 listener.bind('106.185.40.123', 7)
 

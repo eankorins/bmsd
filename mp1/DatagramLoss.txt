@@ -1,0 +1,16 @@
+For all tests we used a datagram size of 250/500/1000 bytes. we sent a total of 5000/2500/1000 packets every time with an interval of 0/0.1/0.5 seconds
+
+1. Locally we did not discover any losses or duplicates, except for running it through an echo server using the questionable socket.
+	Which results in around a 10% loss and 10% duplication.
+
+2. At ITU the loss was great. With no interval on the packets the loss approached 50% even over the local network. It improved with lower packet size
+	as well as higher interval, but overall we did not see it drop below 10% on any test over ITU wifi. At my home (Edgars') I experienced a max of 2% when I used interval at 0. 
+	Otherwise hovering around 1%, and decreasing when interval was higher.
+
+3. ITU ethernet there was around 1% packet loss to the external echo server. the other PC which was connected to wifi improved a bit and actually dropped below 10% for a couple tests.
+	At home my packet loss was around the same to the external server, and peaked at 2% when i used an echo server connected to the wifi.
+
+4. From the external echo servers we used, there wasn't a huge difference to be seen between them in results.
+
+Overall it was as expected. Larger files being sent at a rapid pace resulted in the worst results. As well as a busy wifi like ITU dropped a lot. Ethernet was well withing acceptable margins,
+and home WIFI worked close to flawless as well. Surprisingly though i never saw a duplicate packet (outside of using questionablesocket).
