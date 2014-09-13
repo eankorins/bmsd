@@ -2,7 +2,7 @@ require 'socket'
 
 class QuestionableUDPSocket < UDPSocket
 	alias_method :questionable_send, :send
-
+	attr_accessor :temp_packets
 	sent_packets = []
 
 	def reorder(mesg, flags, host, port)
@@ -10,7 +10,7 @@ class QuestionableUDPSocket < UDPSocket
 	end
 
 	def duplicate(mesg, flags, host, port)
-		2.times { questionable_send(mesg << "duped", flags, host, port) }
+		2.times { questionable_send(mesg, flags, host, port) }
 	end
 
 	def discard
