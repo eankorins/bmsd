@@ -11,11 +11,12 @@ class PutClient
 
 	def put(key, value)
 		node_socket = UDPSocket.new
-		node_socket.send "PUT(#{key}, #{value})", 0, @host, @port
+		serialized = Marshal.dump(["PUT", key, value])
+		node_socket.send serialized, 0, @host, @port
 		node_socket.close
 	end
 end
 
 host, port, key, value = ARGV
-
+host = Socket.ip_address_list.detect { |intf| intf.ipv4_private? }.ip_address if host == 'localhost'
 PutClient.new(host, port, key, value)
