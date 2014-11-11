@@ -3,7 +3,8 @@ require 'socket'
 
 class Node
 	Request = Struct.new(:key, :host, :port)
-	attr_accessor :port, :socket, :neighbour_socket, :request_queue, :resource_table
+	
+	attr_accessor :port, :socket, :neighbour_socket, :request_queue, :resource_table, :regex
 
 	def initialize(port, neighbour_ip = nil, neighbour_port = nil)
 		@port = port
@@ -11,6 +12,7 @@ class Node
 		@socket = UDPSocket.new
 		@request_queue = []
 		@resource_table = {}
+		@regex = /(GET|PUT)\((.*)\)/
 		start_listening
 	end
 
@@ -20,22 +22,48 @@ class Node
 			text, sender = @socket.recvfrom(1024)
 			remote_host = sender[3]
 
-			msg_type = "unknown"
-			msg_type = "GET" if text.include?("GET") 
-			msg_type = "PUT" if text.include?("PUT")
+			msg_type, arguments = text.scan(@regex).first
 
+			if msg_type == "GET"
+				key, host, port = arguments.split(', ')
+				get(key.to_i, host, port)
+			elsif msg_type == "PUT"
+				key, value = arguments.split(', ')
+				put(key.to_i, value)
+			end
+			puts "#{resource_table}"
 			puts "Received msg: #{msg_type} from remote #{remote_host}"
 		end
 	end
 
-	def put(key, value)
-		@resource_table[key] = value if @resource_table[key].nil?
+	#Reloves all pending requests made by clients and sends response, doesn't care if client still exists
+	def resolve_queue(key)
+		waiting = request_queue.select { |req| req.key == key }
+		waiting.each do |w|
+			s = UDPSocket.new
+			s.send "PUT(#{key}, #{resource_table[key]})", 0, w.host, w.port
+			s.close
+			request_queue - [w]
+		end
 	end
 
-	def get(key, client_addr_info)
-		client_port = client_addr_info[1]
-		client_host = client_addr_info[3]
-		@request_queue.push Request.new(key, client_port, client_host)
+	#Puts the new resource into the resource_table and resolves_queue sending to all pending requests
+	def put(key, value)
+		@resource_table[key] = value unless @resource_table.has_key?(key)
+		puts "Putting #{key}"
+		resolve_queue(key)
+	end
+
+	#Returns to client if the resource exists, otherwise is added to the request queue
+	def get(key, host, port)
+		if resource_table.has_key?(key)
+			s = UDPSocket.new
+			puts "Returning resource #{key} to #{host}:#{port}"
+			s.send "PUT(#{key}, #{resource_table[key]})", 0, host, port
+			s.close
+		else
+			@request_queue.push Request.new(key, host, port)
+		end
 	end
 end
 

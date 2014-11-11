@@ -11,7 +11,7 @@ class PutClient
 
 	def put(key, value)
 		node_socket = UDPSocket.new
-		node_socket.send "PUT(#{key},#{value})", 0, @host, @port
+		node_socket.send "PUT(#{key}, #{value})", 0, @host, @port
 		node_socket.close
 	end
 end
