@@ -1,0 +1,20 @@
+Is your system:
+a publish/subscribe system?
+... a message Queue?
+... a structured P2P system?
+... an unstructured P2P system?
+... a distributed set implementation?
+... a distributed hash table implementation?
+(I'm not quite sure, i'm thinking structured P2P)
+
+What is the average-case, best-case, and worst-case space consumed at each Node?
+
+Every single node receives every single resource, which means that space is O(n) where n is the the number of resources
+
+What is the average-case, best-case and worst-case number and size of messages being sent as a result of 
+A PUT message from a client, and
+	
+A successful GET message from a client (that is, a value is found and sent back.)
+An unsuccessful GET message from a client (that is, no value is found.)
+Based on 2 and 3, write a paragraph or two on the current scalability of your system. 
+Based on 2, 3 and 4, give suggestions for improving the scalability of your system. 
