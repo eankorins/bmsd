@@ -26,7 +26,7 @@ class Node
 	# and starts a new thread computing depending on message type
 	def start_listening
 		@socket = UDPSocket.new
-		@socket.connect(@info.host, @info.port)
+		@socket.bind(@info.host, @info.port)
 		while true
 			text, sender = @socket.recvfrom(1024)
 
@@ -36,8 +36,8 @@ class Node
 				puts "Received msg: #{msg_type}, #{arguments} from remote #{sender}"
 
 				if msg_type == "GET"
-					key, host, port = arguments
-					get(key.to_i, sender[3], @info.port)
+					key, port = arguments
+					get(key.to_i, sender[3], port)
 				elsif msg_type == "PUT"
 					key, value = arguments
 					put(key.to_i, value)

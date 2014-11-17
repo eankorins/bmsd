@@ -12,6 +12,7 @@ class PutClient
 	end
 
 	def put(key, value)
+		puts "Sending to #{@host}:#{@port}"
 		node_socket = UDPSocket.new
 		serialized = Marshal.dump(["PUT", key, value])
 		node_socket.send serialized, 0, @host, @port
