@@ -1,6 +1,8 @@
 require 'socket'
 
 class PutClient
+	Request = Struct.new(:key, :host, :port)
+	NodeInfo = Struct.new(:host, :port)
 	attr_accessor  :host, :port
 
 	def initialize(host = 'localhost', port = 1234, key = 1, value = "Hello")
